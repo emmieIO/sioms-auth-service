@@ -56,7 +56,7 @@ class Authservice
                 $invite->delete();
             }
         });
-        $user->notify(new VerifyEmailQueued($user));
+        $user->notify(new VerifyEmailQueued());
         return ['user' => $user, 'token' => $token];
     }
 

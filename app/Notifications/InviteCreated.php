@@ -14,6 +14,7 @@ class InviteCreated extends Notification implements ShouldQueue
     use Queueable;
 
 
+    public function __construct(protected $invite){}
 
     public function viaQueues()
     {
@@ -21,6 +22,8 @@ class InviteCreated extends Notification implements ShouldQueue
             'mail' => QueueNamesEnum::Notifications->value,
         ];
     }
+
+
 
     /**
      * Get the notification's delivery channels.
