@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\QueueNamesEnum;
 use App\Models\Invite;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,13 +15,11 @@ class InviteCreated extends Notification implements ShouldQueue
 
 
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(protected Invite $invite)
+    public function viaQueues()
     {
-
-        $this->onQueue("notifications");
+        return [
+            'mail' => QueueNamesEnum::Notifications->value,
+        ];
     }
 
     /**

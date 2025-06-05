@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPasswordQueued;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
 use BinaryCabin\LaravelUUID\Traits\HasUUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens, HasUUID, HasRoles;
@@ -68,8 +69,12 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            "user"=>$this->email,
+            "user" => $this->email,
             'roles' => $this->getRoleNames()->toArray()
         ];
+    }
+
+    public function sendPasswordResetNotification($token) {
+        $this->notify(new ResetPasswordQueued($token));
     }
 }

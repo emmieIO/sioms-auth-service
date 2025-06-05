@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Invite;
 use App\Models\User;
 use App\Notifications\InviteCreated;
+use App\Notifications\VerifyEmailQueued;
 use DB;
 use Exception;
 use Hash;
@@ -55,6 +56,7 @@ class Authservice
                 $invite->delete();
             }
         });
+        $user->notify(new VerifyEmailQueued($user));
         return ['user' => $user, 'token' => $token];
     }
 
@@ -70,8 +72,6 @@ class Authservice
         ];
     }
 
-    
-
     public function createInvite(array $data)
     {
         $invite = DB::transaction(function () use ($data) {
@@ -81,4 +81,7 @@ class Authservice
         $invite->notify(new InviteCreated($invite));
         return $invite;
     }
+
+
+
 }
